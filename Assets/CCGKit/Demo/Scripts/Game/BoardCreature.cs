@@ -16,6 +16,7 @@ using CCGKit;
 public class BoardCreature : MonoBehaviour
 {
     public RuntimeCard card { get; private set; }
+    private CardDataSO cardData;
 
     [HideInInspector]
     public GameObject fightTargetingArrowPrefab;
@@ -73,6 +74,7 @@ public class BoardCreature : MonoBehaviour
 
     protected Action<int, int> onAttackStatChangedDelegate;
     protected Action<int, int> onHealthStatChangedDelegate;
+    private AudioSource audioSource;
 
     protected virtual void Awake()
     {
@@ -86,6 +88,11 @@ public class BoardCreature : MonoBehaviour
         Assert.IsNotNull(attackText);
         Assert.IsNotNull(healthText);
         Assert.IsNotNull(sleepingParticles);
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     protected virtual void OnDestroy()
@@ -100,6 +107,7 @@ public class BoardCreature : MonoBehaviour
 
         var gameConfig = GameManager.Instance.config;
         var libraryCard = gameConfig.GetCard(card.cardId);
+        cardData = libraryCard.cardData;
         Assert.IsNotNull(libraryCard);
         nameText.text = libraryCard.name;
 
@@ -321,5 +329,34 @@ public class BoardCreature : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void PlayEntranceSound()
+    {
+        if (cardData == null) return;
+
+        PlaySound(cardData.Entrada);
+    }
+
+    public void PlayActivation()
+    {
+        if (cardData == null) return;
+
+        PlaySound(cardData.Activacion);
+    }
+
+    public void PlayDeathSound()
+    {
+        Debug.Log("Playing death ");
+        if (cardData == null) return;
+
+        PlaySound(cardData.Muerte);
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        audioSource.PlayOneShot(clip);
     }
 }

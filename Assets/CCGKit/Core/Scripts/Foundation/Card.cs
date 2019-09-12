@@ -2,8 +2,9 @@
 // This code can only be used under the standard Unity Asset Store End User License Agreement,
 // a copy of which is available at http://unity3d.com/company/legal/as_terms.
 
+using System;
 using System.Collections.Generic;
-
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace CCGKit
@@ -52,6 +53,22 @@ namespace CCGKit
         /// The abilities of this card.
         /// </summary>
         public List<Ability> abilities = new List<Ability>();
+
+        private string cardDataPath;
+
+        [SerializeField]
+        public string CardDataPath
+        {
+            get => cardDataPath;
+            set
+            {
+                cardDataPath = value;
+                cardData = Resources.Load<CardDataSO>(cardDataPath);
+            }
+        }
+
+        [NonSerialized]
+        public CardDataSO cardData;
 
         /// <summary>
         /// Constructor.

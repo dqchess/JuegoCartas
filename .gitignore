@@ -14,3 +14,4 @@
 *.booproj
 *.tmproj
 *.dwlt
+/Assets/Plugins/Editor/JetBrains*

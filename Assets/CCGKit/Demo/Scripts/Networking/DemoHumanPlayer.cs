@@ -57,7 +57,7 @@ public class DemoHumanPlayer : DemoPlayer
     protected List<BoardCreature> opponentGraveyardCards = new List<BoardCreature>();
 
     protected BoardCreature currentCreature;
-    protected CardView currentSpellCard;
+    protected SpellCardView currentSpellCard;
 
     protected GameUI gameUI;
     protected PopupChat chatPopup;
@@ -192,6 +192,7 @@ public class DemoHumanPlayer : DemoPlayer
                 RearrangeBottomBoard();
                 boardCard.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
                 boardCard.GetComponent<SortingGroup>().sortingOrder = playerGraveyardCards.Count;
+                boardCard.PlayDeathSound();
                 Destroy(boardCard.GetComponent<BoxCollider2D>());
             }
             else if (currentSpellCard != null && card == currentSpellCard.card)
@@ -203,6 +204,7 @@ public class DemoHumanPlayer : DemoPlayer
                 currentSpellCard.transform.DOMove(graveyardPos, 0.5f);
                 currentSpellCard.transform.DOScale(new Vector2(0.6f, 0.6f), 0.5f);
                 currentSpellCard.GetComponent<HandCard>().enabled = false;
+                currentSpellCard.PlayDeathSound();
                 currentSpellCard = null;
             }
         };
@@ -826,6 +828,7 @@ public class DemoHumanPlayer : DemoPlayer
                 Destroy(card.gameObject);
 
                 currentCreature = boardCreature.GetComponent<BoardCreature>();
+                currentCreature.PlayEntranceSound();
 
                 RearrangeBottomBoard(() =>
                 {
@@ -876,8 +879,9 @@ public class DemoHumanPlayer : DemoPlayer
             {
                 var spellsPivot = GameObject.Find("PlayerSpellsPivot");
                 var sequence = DOTween.Sequence();
-                sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 0.5f));
-                sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.2f));
+                sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 1f));
+                sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.4f));
+                card.PlayEntranceSound();
                 sequence.Play().OnComplete(() =>
                 {
                     card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
@@ -898,7 +902,8 @@ public class DemoHumanPlayer : DemoPlayer
                         }
                     }
 
-                    currentSpellCard = card;
+                    card.PlayActivationSound();
+                    currentSpellCard = card as SpellCardView;
 
                     if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
                     {
@@ -908,19 +913,13 @@ public class DemoHumanPlayer : DemoPlayer
                         targetingArrow.targetType = targetableAbility.target.GetTarget();
                         targetingArrow.onTargetSelected += () =>
                         {
-                            base.PlayCard(card.card, targetingArrow.targetInfo);
-                            effectSolver.MoveCard(netId, card.card, "Hand", "Board", targetingArrow.targetInfo);
-                            currentSpellCard = null;
-                            gameUI.endTurnButton.SetEnabled(true);
+                            StartCoroutine(WaitToSolveCard(card, targetingArrow.targetInfo));
                         };
                         targetingArrow.Begin(boardSpell.transform.localPosition);
                     }
                     else
                     {
-                        base.PlayCard(card.card);
-                        effectSolver.MoveCard(netId, card.card, "Hand", "Board");
-                        currentSpellCard = null;
-                        gameUI.endTurnButton.SetEnabled(true);
+                        StartCoroutine(WaitToSolveCard(card));
                     }
                 });
             }
@@ -931,6 +930,16 @@ public class DemoHumanPlayer : DemoPlayer
         }
     }
 
+    IEnumerator WaitToSolveCard(CardView card, List<int> targetInfo = null)
+    {
+        yield return new WaitForSeconds(1);
+        base.PlayCard(card.card, targetInfo);
+        effectSolver.MoveCard(netId, card.card, "Hand", "Board", targetInfo);
+        currentSpellCard = null;
+        gameUI.endTurnButton.SetEnabled(true);
+        
+    }
+    
     private void AddCreatureToPlayerBoard(RuntimeCard creatureCard)
     {
         var gameConfig = GameManager.Instance.config;
@@ -1168,6 +1177,7 @@ public class DemoHumanPlayer : DemoPlayer
     {
         base.OnCreatureAttacked(msg);
         var attackingCard = opponentBoardCards.Find(x => x.card.instanceId == msg.attackingCardInstanceId);
+        attackingCard?.PlayActivation();
         var attackedCard = playerBoardCards.Find(x => x.card.instanceId == msg.attackedCardInstanceId);
         if (attackingCard != null && attackedCard != null)
         {

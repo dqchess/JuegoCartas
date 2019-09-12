@@ -3,6 +3,7 @@
         "name": "Set 1",
         "cards": [
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 0,
                 "name": "Swamp Snake",
                 "costs": [
@@ -89,6 +90,7 @@
                 "id": 0
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 0,
                 "name": "Wild Bear",
                 "costs": [
@@ -145,6 +147,7 @@
                 "id": 1
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 0,
                 "name": "Valorous Captain",
                 "costs": [
@@ -226,6 +229,7 @@
                 "id": 2
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 0,
                 "name": "Iron Golem",
                 "costs": [
@@ -282,6 +286,7 @@
                 "id": 3
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 0,
                 "name": "Raging Dragon",
                 "costs": [
@@ -356,6 +361,7 @@
                 "id": 4
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 1,
                 "name": "Divine Touch",
                 "costs": [
@@ -416,6 +422,7 @@
                 "id": 5
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 1,
                 "name": "Explosion",
                 "costs": [
@@ -478,6 +485,7 @@
                 "id": 6
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 1,
                 "name": "Combat Rage",
                 "costs": [
@@ -540,6 +548,7 @@
                 "id": 7
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 1,
                 "name": "Mana Growth",
                 "costs": [
@@ -600,6 +609,7 @@
                 "id": 8
             },
             {
+                "CardDataPath": "CardData",
                 "cardTypeId": 1,
                 "name": "Terror",
                 "costs": [
@@ -667,6 +677,7 @@
         "name": "Set 2",
         "cards": [
             {
+                "CardDataPath": "",
                 "cardTypeId": 0,
                 "name": "Vengeful Vampire",
                 "costs": [
@@ -746,6 +757,7 @@
                 "id": 10
             },
             {
+                "CardDataPath": "",
                 "cardTypeId": 0,
                 "name": "Elvish Healer",
                 "costs": [

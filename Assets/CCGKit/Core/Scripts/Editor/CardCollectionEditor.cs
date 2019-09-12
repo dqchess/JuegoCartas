@@ -52,6 +52,8 @@ namespace CCGKit
         private List<Type> cardTargetTypes;
         private List<string> cardTargetTypeNames;
 
+        private CardDataSO currentCardData;
+
         public CardCollectionEditor(GameConfiguration config) : base(config)
         {
             cardSetsList = EditorUtils.SetupReorderableList("Card sets", gameConfig.cardSets, ref currentCardSet, (rect, x) =>
@@ -65,6 +67,7 @@ namespace CCGKit
                 currentCardCost = null;
                 currentCardKeyword = null;
                 currentCardAbility = null;
+                currentCardData = null;
                 CreateCurrentCardSetCardsList();
             },
             () =>
@@ -90,6 +93,7 @@ namespace CCGKit
             (x) =>
             {
                 currentCard = x;
+                currentCardData = x.cardData;
                 currentCardCost = null;
                 currentCardKeyword = null;
                 currentCardAbility = null;
@@ -554,6 +558,26 @@ namespace CCGKit
             }
 
             GUILayout.EndHorizontal();
+
+            string newCardDataPath = "";
+            currentCardData = (CardDataSO)EditorGUILayout.ObjectField("Card Data", currentCardData, typeof(CardDataSO), false);
+            if (currentCardData != null)
+            {
+                var cardDataPath = AssetDatabase.GetAssetPath(currentCardData);
+                int indexOfResources = cardDataPath.IndexOf("Resources/");
+                if (indexOfResources != -1)
+                {
+                    newCardDataPath = cardDataPath.Remove(0, indexOfResources + + "Resources/".Length);
+                    newCardDataPath = newCardDataPath.Replace(".asset", "");
+                }
+                else
+                {
+                    GUIStyle style = new GUIStyle ();
+                    style.richText = true;
+                    GUILayout.Label("<color=red>CardData must be in a \"Resources\" path hierarchy</color>", style);
+                }
+            }
+            card.CardDataPath = newCardDataPath;
 
             GUILayout.EndVertical();
 

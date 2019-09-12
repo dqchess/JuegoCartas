@@ -30,6 +30,9 @@ public class CardView : MonoBehaviour
 
     protected GameObject previewCard;
 
+    private AudioSource audioSource;
+    protected CardDataSO cardData;
+
     public int manaCost { get; protected set; }
 
     [HideInInspector]
@@ -42,6 +45,11 @@ public class CardView : MonoBehaviour
         Assert.IsNotNull(costText);
         Assert.IsNotNull(nameText);
         Assert.IsNotNull(bodyText);
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
     }
 
     public virtual void PopulateWithInfo(RuntimeCard card)
@@ -72,6 +80,8 @@ public class CardView : MonoBehaviour
         {
             pictureSprite.material = Resources.Load<Material>(string.Format("Materials/{0}", material));
         }
+
+        cardData = libraryCard.cardData;
     }
 
     public virtual void PopulateWithLibraryInfo(Card card)
@@ -108,5 +118,26 @@ public class CardView : MonoBehaviour
     public void SetHighlightingEnabled(bool enabled)
     {
         glowSprite.enabled = enabled;
+    }
+
+    public void PlayEntranceSound()
+    {
+        if (cardData == null) return;
+
+        PlaySound(cardData.Entrada);
+    }
+
+    public void PlayActivationSound()
+    {
+        if (cardData == null) return;
+
+        PlaySound(cardData.Activacion);
+    }
+
+    protected void PlaySound(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        audioSource.PlayOneShot(clip, 1);
     }
 }
