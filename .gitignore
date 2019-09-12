@@ -3,3 +3,14 @@
 /Temp
 /.idea
 /Logs
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.tmproj
+*.dwlt
