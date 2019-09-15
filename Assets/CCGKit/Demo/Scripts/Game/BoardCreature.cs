@@ -40,6 +40,9 @@ public class BoardCreature : MonoBehaviour
     protected SpriteRenderer pictureSprite;
 
     [SerializeField]
+    protected SpriteRenderer backgorundSprite;
+
+    [SerializeField]
     protected TextMeshPro nameText;
 
     [SerializeField]
@@ -116,7 +119,9 @@ public class BoardCreature : MonoBehaviour
         attackText.text = attackStat.effectiveValue.ToString();
         healthText.text = healthStat.effectiveValue.ToString();
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", libraryCard.GetStringProperty("Picture")));
+        backgorundSprite.sprite = libraryCard.cardData.ImagenFondoTablero;
+        backgorundSprite.color = libraryCard.cardData.TinteFondo;
+        pictureSprite.sprite = libraryCard.cardData.ImagenTablero;
         var material = libraryCard.GetStringProperty("Material");
         if (!string.IsNullOrEmpty(material))
         {

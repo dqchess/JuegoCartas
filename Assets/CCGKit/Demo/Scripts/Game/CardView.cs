@@ -20,6 +20,9 @@ public class CardView : MonoBehaviour
     protected SpriteRenderer pictureSprite;
 
     [SerializeField]
+    protected SpriteRenderer backgroundSprite;
+
+    [SerializeField]
     protected TextMeshPro costText;
 
     [SerializeField]
@@ -65,6 +68,8 @@ public class CardView : MonoBehaviour
         Assert.IsNotNull(libraryCard);
         nameText.text = libraryCard.name;
         bodyText.text = libraryCard.GetStringProperty("Text");
+        backgroundSprite.sprite = libraryCard.cardData.ImagenFondoMano != null ? libraryCard.cardData.ImagenFondoMano : backgroundSprite.sprite;
+        backgroundSprite.color = libraryCard.cardData.TinteFondo;
 
         var cost = libraryCard.costs.Find(x => x is PayResourceCost);
         if (cost != null)
@@ -74,7 +79,7 @@ public class CardView : MonoBehaviour
             costText.text = manaCost.ToString();
         }
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", libraryCard.GetStringProperty("Picture")));
+        pictureSprite.sprite = libraryCard.cardData.ImagenMano;
         var material = libraryCard.GetStringProperty("Material");
         if (!string.IsNullOrEmpty(material))
         {
