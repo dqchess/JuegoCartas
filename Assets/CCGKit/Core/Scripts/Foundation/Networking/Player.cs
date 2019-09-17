@@ -488,9 +488,11 @@ namespace CCGKit
             PlayCard(card, targetInfo);
         }
 
-        public void PlayCard(RuntimeCard card, List<int> targetInfo = null)
+        public void PlayCard(RuntimeCard card, List<int> targetInfo = null, bool playSound = true)
         {
             var libraryCard = GameManager.Instance.config.GetCard(card.cardId);
+            if(playSound)
+                AudioManager.Instance.PlaySound(libraryCard.cardData.Entrada);
             PayResourceCosts(libraryCard.costs.ConvertAll(cost => cost as PayResourceCost));
             SendMoveCardMessage(card, targetInfo);
         }
@@ -519,18 +521,22 @@ namespace CCGKit
             client.Send(NetworkProtocol.MoveCard, msg);
         }
 
-        public void FightPlayer(int cardInstanceId)
+        public void FightPlayer(RuntimeCard attackingCard)
         {
-            effectSolver.FightPlayer(netId, cardInstanceId);
+            var libraryCard = GameManager.Instance.config.GetCard(attackingCard.cardId);
+            AudioManager.Instance.PlaySound(libraryCard.cardData.Activacion);
+            effectSolver.FightPlayer(netId, attackingCard.instanceId);
 
             var msg = new FightPlayerMessage();
             msg.attackingPlayerNetId = netId;
-            msg.cardInstanceId = cardInstanceId;
+            msg.cardInstanceId = attackingCard.instanceId;
             client.Send(NetworkProtocol.FightPlayer, msg);
         }
 
         public void FightCreature(RuntimeCard attackingCard, RuntimeCard attackedCard)
         {
+            var libraryCard = GameManager.Instance.config.GetCard(attackingCard.cardId);
+            AudioManager.Instance.PlaySound(libraryCard.cardData.Activacion);
             effectSolver.FightCreature(netId, attackingCard, attackedCard);
 
             var msg = new FightCreatureMessage();

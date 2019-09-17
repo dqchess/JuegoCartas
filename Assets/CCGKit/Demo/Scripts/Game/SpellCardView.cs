@@ -6,10 +6,4 @@ using CCGKit;
 
 public class SpellCardView : CardView
 {
-    public void PlayDeathSound()
-    {
-        if (cardData == null) return;
-
-        PlaySound(cardData.Muerte);
-    }
 }

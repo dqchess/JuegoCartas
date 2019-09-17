@@ -305,7 +305,7 @@ public class BoardCreature : MonoBehaviour
                 sortingGroup.sortingOrder = 100;
                 CombatAnimation.PlayFightAnimation(gameObject, targetPlayer.gameObject, 0.1f, () =>
                 {
-                    ownerPlayer.FightPlayer(card.instanceId);
+                    ownerPlayer.FightPlayer(card);
                 },
                 () =>
                 {
@@ -334,34 +334,5 @@ public class BoardCreature : MonoBehaviour
                 }
             }
         }
-    }
-
-    public void PlayEntranceSound()
-    {
-        if (cardData == null) return;
-
-        PlaySound(cardData.Entrada);
-    }
-
-    public void PlayActivation()
-    {
-        if (cardData == null) return;
-
-        PlaySound(cardData.Activacion);
-    }
-
-    public void PlayDeathSound()
-    {
-        Debug.Log("Playing death ");
-        if (cardData == null) return;
-
-        PlaySound(cardData.Muerte);
-    }
-
-    private void PlaySound(AudioClip clip)
-    {
-        if (clip == null) return;
-
-        audioSource.PlayOneShot(clip);
     }
 }

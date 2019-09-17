@@ -176,7 +176,7 @@ public class DemoAIPlayer : DemoPlayer
                 if (creature != null && creature.namedStats["Life"].effectiveValue > 0 &&
                     (numTurnsOnBoard[creature.instanceId] >= 1 || creature.HasKeyword("Impetus")))
                 {
-                    FightPlayer(creature.instanceId);
+                    FightPlayer(creature);
                     yield return new WaitForSeconds(2.0f);
                 }
             }
@@ -192,7 +192,7 @@ public class DemoAIPlayer : DemoPlayer
                     var opponentPower = GetOpponentAttackingPower();
                     if (playerPower > opponentPower)
                     {
-                        FightPlayer(creature.instanceId);
+                        FightPlayer(creature);
                         yield return new WaitForSeconds(2.0f);
                     }
                     else
@@ -205,7 +205,7 @@ public class DemoAIPlayer : DemoPlayer
                         }
                         else
                         {
-                            FightPlayer(creature.instanceId);
+                            FightPlayer(creature);
                             yield return new WaitForSeconds(2.0f);
                         }
                     }
