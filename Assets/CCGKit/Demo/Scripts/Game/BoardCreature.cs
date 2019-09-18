@@ -18,7 +18,6 @@ public class BoardCreature : MonoBehaviour
     public RuntimeCard card { get; private set; }
     private CardDataSO cardData;
 
-    [HideInInspector]
     public GameObject fightTargetingArrowPrefab;
 
     [SerializeField]

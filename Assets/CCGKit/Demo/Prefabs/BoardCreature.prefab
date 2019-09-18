@@ -300,7 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fb37021c64ad2a4e8899b9d9bb4c5da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fightTargetingArrowPrefab: {fileID: 0}
+  fightTargetingArrowPrefab: {fileID: 1009513512288260, guid: 220963b2578d8254bac3491a4421740a,
+    type: 3}
   glowSprite: {fileID: 212842527273433324}
   shadowSprite: {fileID: 212723791860753678}
   shieldGlowSprite: {fileID: 212593062605481418}

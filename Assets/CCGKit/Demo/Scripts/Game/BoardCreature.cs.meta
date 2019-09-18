@@ -1,10 +1,25 @@
 fileFormatVersion: 2
 guid: 1fb37021c64ad2a4e8899b9d9bb4c5da
-timeCreated: 1494411572
-licenseType: Store
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - fightTargetingArrowPrefab: {fileID: 1009513512288260, guid: 220963b2578d8254bac3491a4421740a,
+      type: 3}
+  - glowSprite: {instanceID: 0}
+  - shadowSprite: {instanceID: 0}
+  - shieldGlowSprite: {instanceID: 0}
+  - shieldShadowSprite: {instanceID: 0}
+  - shieldSprite: {instanceID: 0}
+  - pictureSprite: {instanceID: 0}
+  - backgorundSprite: {instanceID: 0}
+  - nameText: {instanceID: 0}
+  - attackText: {instanceID: 0}
+  - healthText: {instanceID: 0}
+  - sleepingParticles: {instanceID: 0}
+  - ownerPlayer: {instanceID: 0}
+  - abilitiesTargetingArrow: {instanceID: 0}
+  - fightTargetingArrow: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
