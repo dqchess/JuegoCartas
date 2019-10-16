@@ -13,37 +13,8 @@ using TMPro;
 
 using CCGKit;
 
-public class BoardCreature : MonoBehaviour
+public class BoardCreature : BaseBoardCard
 {
-    public RuntimeCard card { get; private set; }
-    private CardDataSO cardData;
-
-    public GameObject fightTargetingArrowPrefab;
-
-    [SerializeField]
-    protected SpriteRenderer glowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shadowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shieldGlowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shieldShadowSprite;
-
-    [SerializeField]
-    protected SpriteRenderer shieldSprite;
-
-    [SerializeField]
-    protected SpriteRenderer pictureSprite;
-
-    [SerializeField]
-    protected SpriteRenderer backgorundSprite;
-
-    [SerializeField]
-    protected TextMeshPro nameText;
-
     [SerializeField]
     protected TextMeshPro attackText;
 
@@ -54,7 +25,7 @@ public class BoardCreature : MonoBehaviour
     protected ParticleSystem sleepingParticles;
 
     [HideInInspector]
-    public DemoHumanPlayer ownerPlayer;
+    public bool isPlayable;
     [HideInInspector]
     public TargetingArrow abilitiesTargetingArrow;
     [HideInInspector]
@@ -62,9 +33,6 @@ public class BoardCreature : MonoBehaviour
 
     public Stat attackStat { get; protected set; }
     public Stat healthStat { get; protected set; }
-
-    [HideInInspector]
-    public bool isPlayable;
 
     [HideInInspector]
     public bool hasImpetus;
@@ -76,26 +44,6 @@ public class BoardCreature : MonoBehaviour
 
     protected Action<int, int> onAttackStatChangedDelegate;
     protected Action<int, int> onHealthStatChangedDelegate;
-    private AudioSource audioSource;
-
-    protected virtual void Awake()
-    {
-        Assert.IsNotNull(glowSprite);
-        Assert.IsNotNull(shadowSprite);
-        Assert.IsNotNull(shieldGlowSprite);
-        Assert.IsNotNull(shieldShadowSprite);
-        Assert.IsNotNull(shieldSprite);
-        Assert.IsNotNull(pictureSprite);
-        Assert.IsNotNull(nameText);
-        Assert.IsNotNull(attackText);
-        Assert.IsNotNull(healthText);
-        Assert.IsNotNull(sleepingParticles);
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
-    }
 
     protected virtual void OnDestroy()
     {
@@ -103,7 +51,7 @@ public class BoardCreature : MonoBehaviour
         attackStat.onValueChanged -= onAttackStatChangedDelegate;
     }
 
-    public virtual void PopulateWithInfo(RuntimeCard card)
+    public override void PopulateWithInfo(RuntimeCard card)
     {
         this.card = card;
 

@@ -21,28 +21,28 @@ public class FightTargetingArrow : TargetingArrow
         Destroy(gameObject);
     }
 
-    public override void OnCardSelected(BoardCreature creature)
+    public override void OnCardSelected(BaseBoardCard boardCard)
     {
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
             targetType == EffectTarget.TargetCard ||
-            (targetType == EffectTarget.PlayerOrPlayerCreature && creature.tag == "PlayerOwned") ||
-            (targetType == EffectTarget.OpponentOrOpponentCreature && creature.tag == "OpponentOwned") ||
-            (targetType == EffectTarget.PlayerCard && creature.tag == "PlayerOwned") ||
-            (targetType == EffectTarget.OpponentCard && creature.tag == "OpponentOwned"))
+            (targetType == EffectTarget.PlayerOrPlayerCreature && boardCard.tag == "PlayerOwned") ||
+            (targetType == EffectTarget.OpponentOrOpponentCreature && boardCard.tag == "OpponentOwned") ||
+            (targetType == EffectTarget.PlayerCard && boardCard.tag == "PlayerOwned") ||
+            (targetType == EffectTarget.OpponentCard && boardCard.tag == "OpponentOwned"))
         {
             var opponentHasProvoke = OpponentBoardContainsProvokingCreatures();
-            if (!opponentHasProvoke || (opponentHasProvoke && creature.card.HasKeyword("Provoke")))
+            if (!opponentHasProvoke || (opponentHasProvoke && boardCard.card.HasKeyword("Provoke")))
             {
-                selectedCard = creature;
+                selectedCard = boardCard;
                 selectedPlayer = null;
-                CreateTarget(creature.transform.position);
+                CreateTarget(boardCard.transform.position);
             }
         }
     }
 
-    public override void OnCardUnselected(BoardCreature creature)
+    public override void OnCardUnselected(BaseBoardCard boardCard)
     {
-        if (selectedCard == creature)
+        if (selectedCard == boardCard)
         {
             Destroy(target);
             selectedCard = null;

@@ -34,8 +34,8 @@ namespace CCGKit
         protected NetworkClient client;
 
         protected GameState gameState = new GameState();
-        protected PlayerInfo playerInfo = new PlayerInfo();
-        protected PlayerInfo opponentInfo = new PlayerInfo();
+        public PlayerInfo playerInfo = new PlayerInfo();
+        public PlayerInfo opponentInfo = new PlayerInfo();
 
         /// <summary>
         /// True if the game has started; false otherwise.
@@ -488,13 +488,13 @@ namespace CCGKit
             PlayCard(card, targetInfo);
         }
 
-        public void PlayCard(RuntimeCard card, List<int> targetInfo = null, bool playSound = true)
+        public void PlayCard(RuntimeCard card, List<int> targetInfo = null, bool playSound = true, string originZone = "Hand", string destinationZone = "Board" )
         {
             var libraryCard = GameManager.Instance.config.GetCard(card.cardId);
             if(playSound)
                 AudioManager.Instance.PlaySound(libraryCard.cardData.Entrada);
             PayResourceCosts(libraryCard.costs.ConvertAll(cost => cost as PayResourceCost));
-            SendMoveCardMessage(card, targetInfo);
+            SendMoveCardMessage(card, targetInfo, originZone, destinationZone);
         }
 
         public void PayResourceCosts(List<PayResourceCost> costs)
@@ -507,13 +507,13 @@ namespace CCGKit
             });
         }
 
-        public void SendMoveCardMessage(RuntimeCard card, List<int> targetInfo = null)
+        public void SendMoveCardMessage(RuntimeCard card, List<int> targetInfo = null, string originZone = "Hand", string destinationZone = "Board")
         {
             var msg = new MoveCardMessage();
             msg.playerNetId = netId;
             msg.cardInstanceId = card.instanceId;
-            msg.originZoneId = playerInfo.namedZones["Hand"].zoneId;
-            msg.destinationZoneId = playerInfo.namedZones["Board"].zoneId;
+            msg.originZoneId = playerInfo.namedZones[originZone].zoneId;
+            msg.destinationZoneId = playerInfo.namedZones[destinationZone].zoneId;
             if (targetInfo != null)
             {
                 msg.targetInfo = targetInfo.ToArray();

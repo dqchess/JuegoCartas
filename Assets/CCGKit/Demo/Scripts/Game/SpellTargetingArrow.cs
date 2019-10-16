@@ -29,7 +29,7 @@ public class SpellTargetingArrow : TargetingArrow
         }
     }
 
-    public override void OnCardSelected(BoardCreature creature)
+    public override void OnCardSelected(BaseBoardCard creature)
     {
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
             targetType == EffectTarget.TargetCard ||
@@ -54,7 +54,12 @@ public class SpellTargetingArrow : TargetingArrow
                 selectedCard = creature;
                 selectedPlayer = null;
                 targetInfo.Clear();
-                targetInfo.Add(2);
+                int zoneId = 2;
+                if (creature.card.cardType.name == "Artefacto")
+                {
+                    zoneId = 4;
+                }
+                targetInfo.Add(zoneId);
                 targetInfo.Add(creature.card.instanceId);
                 CreateTarget(creature.transform.position);
             }
@@ -69,7 +74,7 @@ public class SpellTargetingArrow : TargetingArrow
         }
     }
 
-    public override void OnCardUnselected(BoardCreature creature)
+    public override void OnCardUnselected(BaseBoardCard creature)
     {
         if (selectedCard != null && selectedCard == creature)
         {

@@ -85,5 +85,48 @@
         "moveAfterTriggeringEffect": true,
         "zoneId": 3,
         "id": 1
+    },
+    {
+        "name": "Artefacto",
+        "properties": [
+            {
+                "value": null,
+                "name": "Text",
+                "$type": "CCGKit.StringProperty"
+            },
+            {
+                "value": 4,
+                "name": "MaxCopies",
+                "$type": "CCGKit.IntProperty"
+            },
+            {
+                "value": null,
+                "name": "Material",
+                "$type": "CCGKit.StringProperty"
+            }
+        ],
+        "stats": [
+            {
+                "name": "Life",
+                "baseValue": 1,
+                "originalValue": 1,
+                "minValue": 0,
+                "maxValue": 1,
+                "id": 0,
+                "$type": "CCGKit.CardStat"
+            }
+        ],
+        "destroyConditions": [
+            {
+                "typeId": 2,
+                "statId": 0,
+                "op": "LessThanOrEqualTo",
+                "value": 0,
+                "$type": "CCGKit.StatDestroyCardCondition"
+            }
+        ],
+        "moveAfterTriggeringEffect": false,
+        "zoneId": 0,
+        "id": 2
     }
 ]

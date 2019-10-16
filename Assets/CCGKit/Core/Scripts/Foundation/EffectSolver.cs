@@ -297,9 +297,19 @@ namespace CCGKit
                     var statCondition = condition as StatDestroyCardCondition;
                     card.stats[statCondition.statId].onValueChanged += (oldValue, newValue) =>
                     {
+                        string originZone = "Board";
+                        string destinationZone = "Graveyard";
                         if (statCondition.IsTrue(card))
                         {
-                            MoveCard(card.ownerPlayer.netId, card, "Board", "Graveyard");
+                            switch (card.cardType.name)
+                            {
+                                case "Artefacto":
+                                    originZone = "Artefactos";
+                                    destinationZone = "Graveyard";
+                                    break;
+                            }
+                            
+                            MoveCard(card.ownerPlayer.netId, card,  originZone, destinationZone);
                         }
                     };
                 }

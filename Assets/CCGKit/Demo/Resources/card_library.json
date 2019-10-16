@@ -25,7 +25,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": 4,
+                        "value": 400,
                         "name": "MaxCopies",
                         "$type": "CCGKit.IntProperty"
                     },
@@ -96,7 +96,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 2,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -153,7 +153,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 3,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -235,7 +235,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 4,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -292,7 +292,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 6,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -367,7 +367,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 4,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -428,7 +428,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 2,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -491,7 +491,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 1,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -615,7 +615,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 2,
+                        "value": 0,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -842,6 +842,136 @@
                     }
                 ],
                 "id": 11
+            }
+        ]
+    },
+    {
+        "name": "Set Test",
+        "cards": [
+            {
+                "CardDataPath": "CardDataCreature",
+                "cardTypeId": 2,
+                "name": "Artefacto",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 1,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": null,
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 400,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 1,
+                        "statId": 0,
+                        "name": "Life",
+                        "originalValue": 1,
+                        "minValue": 0,
+                        "maxValue": 1,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [],
+                "id": 18
+            },
+            {
+                "CardDataPath": "CardDataCreature",
+                "cardTypeId": 0,
+                "name": "CreatureKillArtefact",
+                "costs": [
+                    {
+                        "statId": 1,
+                        "value": 1,
+                        "$type": "CCGKit.PayResourceCost"
+                    }
+                ],
+                "properties": [
+                    {
+                        "value": "Placeholder text",
+                        "name": "Text",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": "Creature",
+                        "name": "Picture",
+                        "$type": "CCGKit.StringProperty"
+                    },
+                    {
+                        "value": 400,
+                        "name": "MaxCopies",
+                        "$type": "CCGKit.IntProperty"
+                    },
+                    {
+                        "value": null,
+                        "name": "Material",
+                        "$type": "CCGKit.StringProperty"
+                    }
+                ],
+                "stats": [
+                    {
+                        "baseValue": 1,
+                        "statId": 0,
+                        "name": "Attack",
+                        "originalValue": 1,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    },
+                    {
+                        "baseValue": 1,
+                        "statId": 1,
+                        "name": "Life",
+                        "originalValue": 1,
+                        "minValue": 0,
+                        "maxValue": 99,
+                        "modifiers": []
+                    }
+                ],
+                "keywords": [],
+                "abilities": [
+                    {
+                        "trigger": {
+                            "zoneId": 2,
+                            "$type": "CCGKit.OnCardEnteredZoneTrigger"
+                        },
+                        "name": "KillCreature",
+                        "type": "Triggered",
+                        "effect": {
+                            "value": {
+                                "constant": 0,
+                                "$type": "CCGKit.ConstantValue"
+                            },
+                            "duration": 0,
+                            "statId": 0,
+                            "gameZoneId": 4,
+                            "cardTypeId": 2,
+                            "$type": "CCGKit.SetCardStatEffect"
+                        },
+                        "target": {
+                            "conditions": [],
+                            "$type": "CCGKit.OpponentCard"
+                        },
+                        "$type": "CCGKit.TriggeredAbility"
+                    }
+                ],
+                "id": 17
             }
         ]
     }

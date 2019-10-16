@@ -131,6 +131,14 @@ public class DemoAIPlayer : DemoPlayer
             }
         }
 
+        foreach (var artefacts in GetArtefactsCardsInHand())
+        {
+            if (TryToPlayCard(artefacts))
+            {
+                yield return new WaitForSeconds(2.0f);
+            }
+        }
+
         yield return new WaitForSeconds(2.0f);
 
         var boardCreatures = new List<RuntimeCard>();
@@ -242,6 +250,12 @@ public class DemoAIPlayer : DemoPlayer
                     {
                         PlayCard(card, target);
                     }
+                }
+                else if (card.cardType.name == "Artefacto")
+                {
+                    playerInfo.namedZones["Hand"].RemoveCard(card);
+                    playerInfo.namedZones["Artefactos"].AddCard(card);
+                    PlayCard(card, target, destinationZone: "Artefactos");
                 }
                 return true;
             }
@@ -360,6 +374,11 @@ public class DemoAIPlayer : DemoPlayer
     protected List<RuntimeCard> GetSpellCardsInHand()
     {
         return playerInfo.namedZones["Hand"].cards.FindAll(x => x.cardType.name == "Spell");
+    }
+    
+    protected List<RuntimeCard> GetArtefactsCardsInHand()
+    {
+        return playerInfo.namedZones["Hand"].cards.FindAll(x => x.cardType.name == "Artefacto");
     }
 
     protected List<RuntimeCard> GetBoardCreatures()

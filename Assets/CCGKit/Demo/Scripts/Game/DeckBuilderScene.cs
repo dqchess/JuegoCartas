@@ -27,6 +27,9 @@ public class DeckBuilderScene : BaseScene
     private GameObject spellCardViewPrefab;
 
     [SerializeField]
+    private GameObject artefactoCardViewPrefab;
+
+    [SerializeField]
     private GameObject deckListContent;
 
     [SerializeField]
@@ -212,6 +215,10 @@ public class DeckBuilderScene : BaseScene
             else if (cardType.name == "Spell")
             {
                 go = Instantiate(spellCardViewPrefab as GameObject);
+            }
+            else if (cardType.name == "Artefacto")
+            {
+                go = Instantiate(artefactoCardViewPrefab as GameObject);
             }
             var cardView = go.GetComponent<CardView>();
             cardView.PopulateWithLibraryInfo(card);

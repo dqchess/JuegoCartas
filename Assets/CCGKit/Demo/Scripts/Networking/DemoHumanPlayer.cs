@@ -34,10 +34,16 @@ public class DemoHumanPlayer : DemoPlayer
     private GameObject spellCardViewPrefab;
 
     [SerializeField]
+    private GameObject artefactoCardViewPrefab;
+
+    [SerializeField]
     private GameObject opponentCardPrefab;
 
     [SerializeField]
     private GameObject boardCreaturePrefab;
+
+    [SerializeField]
+    private GameObject boardArtefactPrefab;
 
     [SerializeField]
     private GameObject spellTargetingArrowPrefab;
@@ -47,6 +53,11 @@ public class DemoHumanPlayer : DemoPlayer
 
     [SerializeField]
     private GameObject opponentTargetingArrowPrefab;
+    
+    private ArtefactZoneController artefactZoneController;
+    
+    private ArtefactZoneController opponentArtefactZoneController;
+    
 #pragma warning restore 649
 
     protected List<CardView> playerHandCards = new List<CardView>();
@@ -276,6 +287,31 @@ public class DemoHumanPlayer : DemoPlayer
         opponentGraveyardZone.onZoneChanged += numCards =>
         {
             gameUI.SetOpponentGraveyardCards(numCards);
+        };
+
+        artefactZoneController = GameObject.Find("PlayerArtefactsZone").GetComponent<ArtefactZoneController>();
+        playerInfo.namedZones["Artefactos"].onCardAdded += (card) =>
+        {
+            artefactZoneController.AddCard(card);
+            UpdateHandCardsHighlight();
+        };
+        playerInfo.namedZones["Artefactos"].onCardRemoved += (card) =>
+        {
+            artefactZoneController.RemoveCard(card);
+            UpdateHandCardsHighlight();
+        };
+
+        opponentArtefactZoneController = GameObject.Find("OpponentArtefactsZone").GetComponent<ArtefactZoneController>();
+        opponentInfo.namedZones["Artefactos"].onCardAdded += (card) =>
+        {
+            var instantiatedCard = opponentArtefactZoneController.AddCard(card);
+            if (instantiatedCard != null) instantiatedCard.tag = "OpponentOwned";
+            UpdateHandCardsHighlight();
+        };
+        opponentInfo.namedZones["Artefactos"].onCardRemoved += (card) =>
+        {
+            opponentArtefactZoneController.RemoveCard(card);
+            UpdateHandCardsHighlight();
         };
     }
 
@@ -707,13 +743,17 @@ public class DemoHumanPlayer : DemoPlayer
         var gameConfig = GameManager.Instance.config;
         var libraryCard = gameConfig.GetCard(card.cardId);
         var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
-        if (cardType.name == "Creature")
+        switch (cardType.name)
         {
-            currentCardPreview = Instantiate(creatureCardViewPrefab as GameObject);
-        }
-        else if (cardType.name == "Spell")
-        {
-            currentCardPreview = Instantiate(spellCardViewPrefab as GameObject);
+            case "Creature":
+                currentCardPreview = Instantiate(creatureCardViewPrefab as GameObject);
+                break;
+            case "Spell":
+                currentCardPreview = Instantiate(spellCardViewPrefab as GameObject);
+                break;
+            case "Artefacto":
+                currentCardPreview = Instantiate(artefactoCardViewPrefab as GameObject);
+                break;
         }
         var cardView = currentCardPreview.GetComponent<CardView>();
         cardView.PopulateWithInfo(card);
@@ -775,13 +815,17 @@ public class DemoHumanPlayer : DemoPlayer
         var libraryCard = gameConfig.GetCard(card.cardId);
         var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
         GameObject go = null;
-        if (cardType.name == "Creature")
+        switch (cardType.name)
         {
-            go = Instantiate(creatureCardViewPrefab as GameObject);
-        }
-        else if (cardType.name == "Spell")
-        {
-            go = Instantiate(spellCardViewPrefab as GameObject);
+            case "Creature":
+                go = Instantiate(creatureCardViewPrefab as GameObject);
+                break;
+            case "Spell":
+                go = Instantiate(spellCardViewPrefab as GameObject);
+                break;
+            case "Artefacto":
+                go = Instantiate(artefactoCardViewPrefab as GameObject);
+                break;
         }
         var cardView = go.GetComponent<CardView>();
         cardView.PopulateWithInfo(card);
@@ -811,115 +855,127 @@ public class DemoHumanPlayer : DemoPlayer
             var gameConfig = GameManager.Instance.config;
             var libraryCard = gameConfig.GetCard(card.card.cardId);
             var cardType = gameConfig.cardTypes.Find(x => x.id == libraryCard.cardTypeId);
-            if (cardType.name == "Creature")
+            switch (cardType.name)
             {
-                var boardCreature = Instantiate(boardCreaturePrefab);
+                case "Creature":
+                    var boardCreature = Instantiate(boardCreaturePrefab);
 
-                var board = GameObject.Find("PlayerBoard");
-                boardCreature.tag = "PlayerOwned";
-                boardCreature.transform.parent = board.transform;
-                boardCreature.transform.position = new Vector2(1.9f * playerBoardCards.Count, 0);
-                boardCreature.GetComponent<BoardCreature>().ownerPlayer = this;
-                boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(card.card);
+                    var board = GameObject.Find("PlayerBoard");
+                    boardCreature.tag = "PlayerOwned";
+                    boardCreature.transform.parent = board.transform;
+                    boardCreature.transform.position = new Vector2(1.9f * playerBoardCards.Count, 0);
+                    boardCreature.GetComponent<BoardCreature>().ownerPlayer = this;
+                    boardCreature.GetComponent<BoardCreature>().PopulateWithInfo(card.card);
 
-                playerHandCards.Remove(card);
-                RearrangeHand();
-                playerBoardCards.Add(boardCreature.GetComponent<BoardCreature>());
+                    playerHandCards.Remove(card);
+                    RearrangeHand();
+                    playerBoardCards.Add(boardCreature.GetComponent<BoardCreature>());
 
-                Destroy(card.gameObject);
+                    Destroy(card.gameObject);
 
-                currentCreature = boardCreature.GetComponent<BoardCreature>();
+                    currentCreature = boardCreature.GetComponent<BoardCreature>();
 
-                RearrangeBottomBoard(() =>
-                {
-                    var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
-                    TriggeredAbility targetableAbility = null;
-                    foreach (var ability in triggeredAbilities)
+                    RearrangeBottomBoard(() =>
                     {
-                        var triggeredAbility = ability as TriggeredAbility;
-                        var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-                        if (trigger != null && trigger.zoneId == boardZone.zoneId && triggeredAbility.target is IUserTarget)
+                        var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
+                        TriggeredAbility targetableAbility = null;
+                        foreach (var ability in triggeredAbilities)
                         {
-                            targetableAbility = triggeredAbility;
-                            break;
+                            var triggeredAbility = ability as TriggeredAbility;
+                            var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
+                            if (trigger != null && trigger.zoneId == boardZone.zoneId && triggeredAbility.target is IUserTarget)
+                            {
+                                targetableAbility = triggeredAbility;
+                                break;
+                            }
                         }
-                    }
 
-                    // Preemptively move the card so that the effect solver can properly check the availability of targets
-                    // by also taking into account this card (that is trying to be played).
-                    playerInfo.namedZones["Hand"].RemoveCard(card.card);
-                    playerInfo.namedZones["Board"].AddCard(card.card);
+                        // Preemptively move the card so that the effect solver can properly check the availability of targets
+                        // by also taking into account this card (that is trying to be played).
+                        playerInfo.namedZones["Hand"].RemoveCard(card.card);
+                        playerInfo.namedZones["Board"].AddCard(card.card);
 
-                    if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
-                    {
-                        var targetingArrow = Instantiate(spellTargetingArrowPrefab).GetComponent<SpellTargetingArrow>();
-                        boardCreature.GetComponent<BoardCreature>().abilitiesTargetingArrow = targetingArrow;
-                        targetingArrow.effectTarget = targetableAbility.target;
-                        targetingArrow.targetType = targetableAbility.target.GetTarget();
-                        targetingArrow.onTargetSelected += () =>
+                        if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
                         {
-                            base.PlayCard(card.card, targetingArrow.targetInfo);
-                            effectSolver.MoveCard(netId, card.card, "Hand", "Board", targetingArrow.targetInfo);
+                            var targetingArrow = Instantiate(spellTargetingArrowPrefab).GetComponent<SpellTargetingArrow>();
+                            boardCreature.GetComponent<BoardCreature>().abilitiesTargetingArrow = targetingArrow;
+                            targetingArrow.effectTarget = targetableAbility.target;
+                            targetingArrow.targetType = targetableAbility.target.GetTarget();
+                            targetingArrow.onTargetSelected += () =>
+                            {
+                                base.PlayCard(card.card, targetingArrow.targetInfo);
+                                effectSolver.MoveCard(netId, card.card, "Hand", "Board", targetingArrow.targetInfo);
+                                currentCreature = null;
+                                gameUI.endTurnButton.SetEnabled(true);
+                            };
+                            targetingArrow.Begin(boardCreature.transform.localPosition);
+                        }
+                        else
+                        {
+                            base.PlayCard(card.card);
+                            effectSolver.MoveCard(netId, card.card, "Hand", "Board");
                             currentCreature = null;
                             gameUI.endTurnButton.SetEnabled(true);
-                        };
-                        targetingArrow.Begin(boardCreature.transform.localPosition);
-                    }
-                    else
-                    {
-                        base.PlayCard(card.card);
-                        effectSolver.MoveCard(netId, card.card, "Hand", "Board");
-                        currentCreature = null;
-                        gameUI.endTurnButton.SetEnabled(true);
-                    }
-                    boardCreature.GetComponent<BoardCreature>().fightTargetingArrowPrefab = fightTargetingArrowPrefab;
-                });
-            }
-            else if (cardType.name == "Spell")
-            {
-                var spellsPivot = GameObject.Find("PlayerSpellsPivot");
-                var sequence = DOTween.Sequence();
-                sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 1f));
-                sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.4f));
-                sequence.Play().OnComplete(() =>
-                {
-                    card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
-                    card.GetComponent<SortingGroup>().sortingOrder = 1000;
-
-                    var boardSpell = card.gameObject.AddComponent<BoardSpell>();
-
-                    var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
-                    TriggeredAbility targetableAbility = null;
-                    foreach (var ability in triggeredAbilities)
-                    {
-                        var triggeredAbility = ability as TriggeredAbility;
-                        var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
-                        if (trigger != null && trigger.zoneId == boardZone.zoneId && triggeredAbility.target is IUserTarget)
-                        {
-                            targetableAbility = triggeredAbility;
-                            break;
                         }
-                    }
-                    AudioManager.Instance.PlaySound(libraryCard.cardData.Entrada);
-                    currentSpellCard = card as SpellCardView;
+                        boardCreature.GetComponent<BoardCreature>().fightTargetingArrowPrefab = fightTargetingArrowPrefab;
+                    });
+                    break;
+                case "Spell":
+                    var spellsPivot = GameObject.Find("PlayerSpellsPivot");
+                    var sequence = DOTween.Sequence();
+                    sequence.Append(card.transform.DOMove(spellsPivot.transform.position, 1f));
+                    sequence.Insert(0, card.transform.DORotate(Vector3.zero, 0.4f));
+                    sequence.Play().OnComplete(() =>
+                    {
+                        card.GetComponent<SortingGroup>().sortingLayerName = "BoardCards";
+                        card.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                    if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
-                    {
-                        var targetingArrow = Instantiate(spellTargetingArrowPrefab).GetComponent<SpellTargetingArrow>();
-                        boardSpell.targetingArrow = targetingArrow;
-                        targetingArrow.effectTarget = targetableAbility.target;
-                        targetingArrow.targetType = targetableAbility.target.GetTarget();
-                        targetingArrow.onTargetSelected += () =>
+                        var boardSpell = card.gameObject.AddComponent<BoardSpell>();
+
+                        var triggeredAbilities = libraryCard.abilities.FindAll(x => x is TriggeredAbility);
+                        TriggeredAbility targetableAbility = null;
+                        foreach (var ability in triggeredAbilities)
                         {
-                            StartCoroutine(WaitToSolveCard(card, targetingArrow.targetInfo));
-                        };
-                        targetingArrow.Begin(boardSpell.transform.localPosition);
-                    }
-                    else
-                    {
-                        StartCoroutine(WaitToSolveCard(card));
-                    }
-                });
+                            var triggeredAbility = ability as TriggeredAbility;
+                            var trigger = triggeredAbility.trigger as OnCardEnteredZoneTrigger;
+                            if (trigger != null && trigger.zoneId == boardZone.zoneId && triggeredAbility.target is IUserTarget)
+                            {
+                                targetableAbility = triggeredAbility;
+                                break;
+                            }
+                        }
+                        AudioManager.Instance.PlaySound(libraryCard.cardData.Entrada);
+                        currentSpellCard = card as SpellCardView;
+
+                        if (targetableAbility != null && effectSolver.AreTargetsAvailable(targetableAbility.effect, card.card, targetableAbility.target))
+                        {
+                            var targetingArrow = Instantiate(spellTargetingArrowPrefab).GetComponent<SpellTargetingArrow>();
+                            boardSpell.targetingArrow = targetingArrow;
+                            targetingArrow.effectTarget = targetableAbility.target;
+                            targetingArrow.targetType = targetableAbility.target.GetTarget();
+                            targetingArrow.onTargetSelected += () =>
+                            {
+                                StartCoroutine(WaitToSolveCard(card, targetingArrow.targetInfo));
+                            };
+                            targetingArrow.Begin(boardSpell.transform.localPosition);
+                        }
+                        else
+                        {
+                            StartCoroutine(WaitToSolveCard(card));
+                        }
+                    });
+                break;
+
+                case "Artefacto":
+                    playerHandCards.Remove(card);
+                    RearrangeHand();
+
+                    handZone.RemoveCard(card.card);
+                    playerInfo.namedZones["Artefactos"].AddCard(card.card);
+                    Destroy(card.gameObject);
+                    gameUI.endTurnButton.SetEnabled(true);
+                    base.PlayCard(card.card, destinationZone: "Artefactos");
+                break;
             }
         }
         else
@@ -995,14 +1051,7 @@ public class DemoHumanPlayer : DemoPlayer
     {
         foreach (var card in playerHandCards)
         {
-            if (card.CanBePlayed(this))
-            {
-                card.SetHighlightingEnabled(true);
-            }
-            else
-            {
-                card.SetHighlightingEnabled(false);
-            }
+            card.SetHighlightingEnabled(card.CanBePlayed(this));
         }
     }
 
@@ -1142,6 +1191,18 @@ public class DemoHumanPlayer : DemoPlayer
             else
             {
                 effectSolver.MoveCard(opponentInfo.netId, opponentBoard.cards[opponentBoard.cards.Count - 1], "Hand", "Board", new List<int>(msg.targetInfo));
+            }
+        }
+        else if (cardType.name == "Artefacto")
+        {
+            var opponentArtefacts = opponentInfo.namedZones["Artefactos"];
+            effectSolver.SetDestroyConditions(opponentArtefacts.cards[opponentArtefacts.cards.Count - 1]);
+            effectSolver.SetTriggers(opponentArtefacts.cards[opponentArtefacts.cards.Count - 1]);
+            var cost = libraryCard.costs.Find(x => x is PayResourceCost);
+            if (cost != null)
+            {
+                var payResourceCost = cost as PayResourceCost;
+                opponentManaStat.baseValue -= payResourceCost.value;
             }
         }
     }

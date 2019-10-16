@@ -96,7 +96,7 @@ public class CardView : MonoBehaviour
             costText.text = manaCost.ToString();
         }
 
-        pictureSprite.sprite = Resources.Load<Sprite>(string.Format("Images/{0}", card.GetStringProperty("Picture")));
+        pictureSprite.sprite = card.cardData.ImagenMano;
         var material = card.GetStringProperty("Material");
         if (!string.IsNullOrEmpty(material))
         {

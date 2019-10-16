@@ -18,7 +18,7 @@ public class TargetingArrow : MonoBehaviour
 
     public Action onTargetSelected;
 
-    public BoardCreature selectedCard { get; protected set; }
+    public BaseBoardCard selectedCard { get; protected set; }
     public PlayerAvatar selectedPlayer { get; protected set; }
 
     public Material material;
@@ -95,11 +95,11 @@ public class TargetingArrow : MonoBehaviour
         head.transform.localRotation = Quaternion.Euler(0, 0, angle + 180);
     }
 
-    public virtual void OnCardSelected(BoardCreature creature)
+    public virtual void OnCardSelected(BaseBoardCard boardCard)
     {
     }
 
-    public virtual void OnCardUnselected(BoardCreature creature)
+    public virtual void OnCardUnselected(BaseBoardCard boardCard)
     {
     }
 

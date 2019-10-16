@@ -38,5 +38,15 @@
         "hasMaxSize": false,
         "maxSize": 0,
         "id": 3
+    },
+    {
+        "name": "Artefactos",
+        "owner": "Player",
+        "type": "Dynamic",
+        "ownerVisibility": "Visible",
+        "opponentVisibility": "Visible",
+        "hasMaxSize": true,
+        "maxSize": 3,
+        "id": 4
     }
 ]
