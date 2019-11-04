@@ -4,7 +4,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 using UnityEngine;
 
 using CCGKit;
@@ -205,7 +205,7 @@ public class DemoAIPlayer : DemoPlayer
                     }
                     else
                     {
-                        var attackedCreature = GetRandomOpponentCreature();
+                        var attackedCreature = GetRandomOpponentCard(GameManager.Instance.config.gameZones.FirstOrDefault(x => x.name == "Board").id, GameManager.Instance.config.cardTypes.FirstOrDefault(x => x.name == "Creature").id);
                         if (attackedCreature != null)
                         {
                             FightCreature(creature, attackedCreature);
@@ -294,12 +294,12 @@ public class DemoAIPlayer : DemoPlayer
                     {
                         targetInfo.Add(0);
                     }
-                    else if (triggeredAbility.effect is CardEffect)
+                    else if (triggeredAbility.effect is CardEffect cardEffect)
                     {
                         var target = GetRandomCreature();
                         if (target != null)
                         {
-                            targetInfo.Add(boardZoneId);
+                            targetInfo.Add(cardEffect.gameZoneId);
                             targetInfo.Add(target.instanceId);
                         }
                         else
@@ -314,12 +314,12 @@ public class DemoAIPlayer : DemoPlayer
                     {
                         targetInfo.Add(1);
                     }
-                    else if (triggeredAbility.effect is CardEffect)
+                    else if (triggeredAbility.effect is CardEffect cardEffect)
                     {
-                        var target = GetRandomOpponentCreature();
+                        var target = GetRandomOpponentCard(cardEffect.gameZoneId, cardEffect.cardTypeId);
                         if (target != null)
                         {
-                            targetInfo.Add(boardZoneId);
+                            targetInfo.Add(cardEffect.gameZoneId);
                             targetInfo.Add(target.instanceId);
                         }
                         else
@@ -401,7 +401,8 @@ public class DemoAIPlayer : DemoPlayer
 
     protected RuntimeCard GetTargetOpponentCreature()
     {
-        var opponentBoard = opponentInfo.namedZones["Board"].cards;
+        var updatedOpponent = FindObjectOfType<DemoHumanPlayer>();
+        var opponentBoard = updatedOpponent.playerInfo.namedZones["Board"].cards;
         var eligibleCreatures = opponentBoard.FindAll(x => x.namedStats["Life"].effectiveValue > 0);
         if (eligibleCreatures.Count > 0)
         {
@@ -418,20 +419,22 @@ public class DemoAIPlayer : DemoPlayer
         return null;
     }
 
-    protected RuntimeCard GetRandomOpponentCreature()
+    protected RuntimeCard GetRandomOpponentCard(int zoneId, int cardTypeId)
     {
-        var board = opponentInfo.namedZones["Board"].cards;
-        var eligibleCreatures = board.FindAll(x => x.namedStats["Life"].effectiveValue > 0);
-        if (eligibleCreatures.Count > 0)
+        var updatedOpponent = FindObjectOfType<DemoHumanPlayer>();
+        var zone = updatedOpponent.playerInfo.zones[zoneId].cards;
+        var elegibleCards = zone.FindAll(x => x.cardType.id == cardTypeId);
+        if (elegibleCards.Count > 0)
         {
-            return eligibleCreatures[Random.Range(0, eligibleCreatures.Count)];
+            return elegibleCards[Random.Range(0, elegibleCards.Count)];
         }
         return null;
     }
 
     protected bool OpponentHasProvokeCreatures()
     {
-        var opponentBoard = opponentInfo.namedZones["Board"].cards;
+        var updatedOpponent = FindObjectOfType<DemoHumanPlayer>();
+        var opponentBoard = updatedOpponent.playerInfo.namedZones["Board"].cards;
         var eligibleCreatures = opponentBoard.FindAll(x => x.namedStats["Life"].effectiveValue > 0);
         if (eligibleCreatures.Count > 0)
         {

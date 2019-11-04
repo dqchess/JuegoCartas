@@ -36,4 +36,6 @@ public abstract class BaseBoardCard : MonoBehaviour
     public DemoHumanPlayer ownerPlayer;
 
     public abstract void PopulateWithInfo(RuntimeCard card);
+
+    public abstract void SetHighlightingEnabled(bool enabled);
 }

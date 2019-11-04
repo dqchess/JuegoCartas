@@ -1129,12 +1129,12 @@ public class DemoHumanPlayer : DemoPlayer
                     var opponentCard = opponentInfo.zones[msg.targetInfo[0]].cards.Find(x => x.instanceId == msg.targetInfo[1]);
                     if (playerCard != null)
                     {
-                        var playerBoardCard = playerBoardCards.Find(x => x.card.instanceId == playerCard.instanceId);
+                        var playerBoardCard = FindObjectsOfType<BaseBoardCard>().ToList().Find(x => x.card.instanceId == playerCard.instanceId);
                         targetingArrow.SetTarget(playerBoardCard.gameObject);
                     }
                     else if (opponentCard != null)
                     {
-                        var opponentBoardCard = opponentBoardCards.Find(x => x.card.instanceId == opponentCard.instanceId);
+                        var opponentBoardCard = FindObjectsOfType<BaseBoardCard>().ToList().Find(x => x.card.instanceId == opponentCard.instanceId);
                         targetingArrow.SetTarget(opponentBoardCard.gameObject);
                     }
 

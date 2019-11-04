@@ -413,8 +413,13 @@ namespace CCGKit
                 var statName = libraryCard.stats.Find(x => x.statId == stat.statId).name;
                 runtimeCard.namedStats[statName] = runtimeStat;
             }
-            opponentInfo.zones[msg.originZoneId].RemoveCard(runtimeCard);
-            opponentInfo.zones[msg.destinationZoneId].AddCard(runtimeCard);
+            var originZone = opponentInfo.zones[msg.originZoneId];
+            originZone.RemoveCard(runtimeCard);
+            opponentInfo.namedZones[originZone.name].RemoveCard(runtimeCard);
+
+            var destinationZone = opponentInfo.zones[msg.destinationZoneId];
+            destinationZone.AddCard(runtimeCard);
+            opponentInfo.namedZones[destinationZone.name].AddCard(runtimeCard);
         }
 
         public virtual void OnPlayerAttacked(PlayerAttackedMessage msg)

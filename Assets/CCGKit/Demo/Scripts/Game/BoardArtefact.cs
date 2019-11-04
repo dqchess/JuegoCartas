@@ -1,3 +1,4 @@
+using System;
 using CCGKit;
 using DG.Tweening;
 using TMPro;
@@ -6,6 +7,16 @@ using UnityEngine.Assertions;
 
 public class BoardArtefact : BaseBoardCard
 {
+    [SerializeField] protected TextMeshPro healthText;
+    public Stat healthStat { get; protected set; }
+    
+    protected Action<int, int> onHealthStatChangedDelegate;
+
+    protected virtual void OnDestroy()
+    {
+        healthStat.onValueChanged -= onHealthStatChangedDelegate;
+    }
+    
     public override void PopulateWithInfo(RuntimeCard card)
     {
         this.card = card;
@@ -16,6 +27,15 @@ public class BoardArtefact : BaseBoardCard
         Assert.IsNotNull(libraryCard);
         nameText.text = libraryCard.name;
 
+        healthStat = card.namedStats["Life"];
+        healthText.text = healthStat.effectiveValue.ToString();
+
+        onHealthStatChangedDelegate = (oldValue, newValue) =>
+        {
+            UpdateStatText(healthText, healthStat);
+        };
+        healthStat.onValueChanged += onHealthStatChangedDelegate;
+        
         gameObject.name = $"{nameText.text} {card.instanceId}";
 
         backgorundSprite.sprite = libraryCard.cardData.ImagenFondoTablero;
@@ -26,6 +46,11 @@ public class BoardArtefact : BaseBoardCard
         {
             pictureSprite.material = Resources.Load<Material>(string.Format("Materials/{0}", material));
         }
+    }
+    public override void SetHighlightingEnabled(bool enabled)
+    {
+        glowSprite.enabled = enabled;
+        shadowSprite.enabled = !enabled;
     }
 
     private void UpdateStatText(TextMeshPro text, Stat stat)

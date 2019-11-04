@@ -174,7 +174,7 @@ public class BoardCreature : BaseBoardCard
         sequence.Play();
     }
 
-    public void SetHighlightingEnabled(bool enabled)
+    public override void SetHighlightingEnabled(bool enabled)
     {
         if (hasProvoke)
         {

@@ -96,7 +96,7 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 0,
+                        "value": 1,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
@@ -112,7 +112,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": 4,
+                        "value": 40,
                         "name": "MaxCopies",
                         "$type": "CCGKit.IntProperty"
                     },
@@ -428,13 +428,13 @@
                 "costs": [
                     {
                         "statId": 1,
-                        "value": 0,
+                        "value": 1,
                         "$type": "CCGKit.PayResourceCost"
                     }
                 ],
                 "properties": [
                     {
-                        "value": "Deal 1 damage to all enemy creatures.",
+                        "value": "Deal 1 damage to a enemy creatures.",
                         "name": "Text",
                         "$type": "CCGKit.StringProperty"
                     },
@@ -444,7 +444,7 @@
                         "$type": "CCGKit.StringProperty"
                     },
                     {
-                        "value": 4,
+                        "value": 40,
                         "name": "MaxCopies",
                         "$type": "CCGKit.IntProperty"
                     },
@@ -462,11 +462,11 @@
                             "zoneId": 2,
                             "$type": "CCGKit.OnCardEnteredZoneTrigger"
                         },
-                        "name": "Deal 1 damage",
+                        "name": "Deal 3 damage",
                         "type": "Triggered",
                         "effect": {
                             "value": {
-                                "constant": 1,
+                                "constant": 3,
                                 "$type": "CCGKit.ConstantValue"
                             },
                             "duration": 0,
@@ -477,7 +477,7 @@
                         },
                         "target": {
                             "conditions": [],
-                            "$type": "CCGKit.AllOpponentCards"
+                            "$type": "CCGKit.OpponentCard"
                         },
                         "$type": "CCGKit.TriggeredAbility"
                     }
@@ -955,14 +955,14 @@
                         "type": "Triggered",
                         "effect": {
                             "value": {
-                                "constant": 0,
+                                "constant": 1,
                                 "$type": "CCGKit.ConstantValue"
                             },
                             "duration": 0,
                             "statId": 0,
                             "gameZoneId": 4,
                             "cardTypeId": 2,
-                            "$type": "CCGKit.SetCardStatEffect"
+                            "$type": "CCGKit.DecreaseCardStatEffect"
                         },
                         "target": {
                             "conditions": [],
