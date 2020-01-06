@@ -38,6 +38,9 @@ public class ArtefactZoneController : MonoBehaviour
         if (empties.Length == 0)
             return;
 
+        var cardLibrary = GameManager.Instance.config.GetCard(card.cardId);
+        AudioManager.Instance.PlaySound(cardLibrary.cardData.Muerte);
+
         Destroy(holdersAndCards[empties.First().Key].gameObject);
         holdersAndCards[empties.First().Key] = null;
     }

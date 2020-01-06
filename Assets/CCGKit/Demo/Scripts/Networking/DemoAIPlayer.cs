@@ -253,6 +253,9 @@ public class DemoAIPlayer : DemoPlayer
                 }
                 else if (card.cardType.name == "Artefacto")
                 {
+                    if (playerInfo.namedZones["Artefactos"].cards.Count >= playerInfo.namedZones["Artefactos"].maxCards)
+                        return false;
+
                     playerInfo.namedZones["Hand"].RemoveCard(card);
                     playerInfo.namedZones["Artefactos"].AddCard(card);
                     PlayCard(card, target, destinationZone: "Artefactos");

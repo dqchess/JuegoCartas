@@ -23,6 +23,8 @@ public class FightTargetingArrow : TargetingArrow
 
     public override void OnCardSelected(BaseBoardCard boardCard)
     {
+        if (boardCard.card.cardType.name != "Creature") return;
+        
         if (targetType == EffectTarget.AnyPlayerOrCreature ||
             targetType == EffectTarget.TargetCard ||
             (targetType == EffectTarget.PlayerOrPlayerCreature && boardCard.tag == "PlayerOwned") ||

@@ -111,7 +111,7 @@
                 "baseValue": 1,
                 "originalValue": 1,
                 "minValue": 0,
-                "maxValue": 1,
+                "maxValue": 10,
                 "id": 0,
                 "$type": "CCGKit.CardStat"
             }

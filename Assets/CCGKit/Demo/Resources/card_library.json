@@ -849,7 +849,7 @@
         "name": "Set Test",
         "cards": [
             {
-                "CardDataPath": "CardDataCreature",
+                "CardDataPath": "CardDataSpell",
                 "cardTypeId": 2,
                 "name": "Artefacto",
                 "costs": [
@@ -883,13 +883,13 @@
                         "name": "Life",
                         "originalValue": 1,
                         "minValue": 0,
-                        "maxValue": 1,
+                        "maxValue": 10,
                         "modifiers": []
                     }
                 ],
                 "keywords": [],
                 "abilities": [],
-                "id": 18
+                "id": 19
             },
             {
                 "CardDataPath": "CardDataCreature",
